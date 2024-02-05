@@ -1,4 +1,5 @@
 import { arch, EOL, cpus, homedir, userInfo } from 'os';
+import { platform } from 'node:process';
 
 export const getOperatingSystemInfo = async (command) => {
     switch (command) {
@@ -8,8 +9,12 @@ export const getOperatingSystemInfo = async (command) => {
         }
         case '--cpus': {
             const computerCPU = cpus();
+            const isApplePlatform = platform === 'darwin';
             console.log('amount CPUs:', computerCPU.length);
-            console.table(computerCPU.map(({ model, speed }) => ({ model, speed: `${speed / 1000}GHz` })));
+            console.table(computerCPU.map(({ model, speed }) => ({
+                model,
+                speed: isApplePlatform ? `${speed / 10}GHz` : `${speed / 1000}GHz`
+            })));
             break;
         }
         case '--homedir': {
